@@ -12,8 +12,138 @@ typedef struct {
     int quantidade;
 } Item;
 
-// Este programa simula o gerenciamento avançado de uma mochila com componentes coletados durante a fuga de uma ilha.
-// Ele introduz ordenação com critérios e busca binária para otimizar a gestão dos recursos.
+#define MAX_ITENS 10
+Item inventario[MAX_ITENS];
+int contadorItens = 0;
+
+void inserirItem();
+void removerItem();
+void listarItens();
+void buscarItem();
+void exibirMenu();
+
+void listarItens() {
+    printf("\n--- Inventário Atual (%d/%d) ---\n", contadorItens, MAX_ITENS);
+
+
+    if (contadorItens == 0) {
+        printf("A mochila está vazia. Cadastre itens para começar!\n");
+        return;
+    }
+
+    for (int i = 0; i < contadorItens; i++) {
+        printf("  [%d] Nome: %s, Tipo: %s, Quantidade: %d\n",
+               i + 1,
+               inventario[i].nome,
+               inventario[i].tipo,
+               inventario[i].quantidade);
+    }
+    printf("--------------------------------------\n");
+}
+
+void inserirItem() {
+    if (contadorItens >= MAX_ITENS) {
+        printf("\n Mochila cheia! Não é possível adicionar mais itens (%d/%d).\n", MAX_ITENS, MAX_ITENS);
+        return;
+    }
+
+    printf("\n--- Cadastro de Novo Item ---\n");
+    Item novoItem;
+
+    printf("Digite o NOME do item (sem espacos): ");
+    scanf("%29s", novoItem.nome);
+
+    printf("Digite o TIPO do item (ex: arma, municao, cura): ");
+    scanf("%19s", novoItem.tipo); 
+
+    
+    printf("Digite a QUANTIDADE: ");
+    while (scanf("%d", &novoItem.quantidade) != 1 || novoItem.quantidade < 1) {
+        printf("Entrada invalida. Digite uma quantidade inteira positiva: ");
+        while (getchar() != '\n');
+    }
+    
+    inventario[contadorItens] = novoItem;
+    contadorItens++;
+
+    printf("\n Item '%s' cadastrado com sucesso!\n", novoItem.nome);
+}
+
+void removerItem() {
+    char nomeBusca[30];
+    int i, encontrado = 0;
+
+    if (contadorItens == 0) {
+        printf("\n Nao ha itens na mochila para remover.\n");
+        return;
+    }
+
+    printf("\n---  Remocao de Item ---\n");
+    printf("Digite o NOME do item que deseja remover (sem espacos): ");
+    scanf("%29s", nomeBusca);
+
+    for (i = 0; i < contadorItens; i++) {
+        if (strcmp(inventario[i].nome, nomeBusca) == 0) {
+            encontrado = 1;
+            break;
+        }
+    }
+
+    if (encontrado) {
+        printf(" Item '%s' encontrado e removido.\n", inventario[i].nome);
+
+        for (int j = i; j < contadorItens - 1; j++) {
+            inventario[j] = inventario[j+1];
+        }
+
+        contadorItens--;
+    } else {
+        printf(" Item '%s' nao encontrado na mochila.\n", nomeBusca);
+    }
+}
+
+void buscarItem() {
+    char nomeBusca[30];
+    int i, encontrado = 0;
+
+    if (contadorItens == 0) {
+        printf("\n Nao ha itens na mochila para buscar.\n");
+        return;
+    }
+
+    printf("\n--- Busca de Item ---\n");
+    printf("Digite o NOME do item que deseja buscar (sem espacos): ");
+    scanf("%29s", nomeBusca);
+
+    for (i = 0; i < contadorItens; i++) {
+        if (strcmp(inventario[i].nome, nomeBusca) == 0) {
+            encontrado = 1;
+            break; // Item encontrado
+        }
+    }
+
+    if (encontrado) {
+        printf("\n Item ENCONTRADO:\n");
+        printf("  Nome: %s\n", inventario[i].nome);
+        printf("  Tipo: %s\n", inventario[i].tipo);
+        printf("  Quantidade: %d\n", inventario[i].quantidade);
+    } else {
+        printf("\n Item '%s' nao foi encontrado no inventario.\n", nomeBusca);
+    }
+}
+
+void exibirMenu() {
+    printf("\n============================================\n");
+    printf(" Sistema de Gerenciamento de Inventario \n");
+    printf("============================================\n");
+    printf("1. Cadastrar Novo Item\n");
+    printf("2. Remover Item por Nome\n");
+    printf("3. Listar Todos os Itens\n");
+    printf("4. Buscar Item por Nome\n");
+    printf("5. Sair do Sistema\n");
+    printf("--------------------------------------------\n");
+    printf("Escolha uma opcao (1-5): ");
+}
 
 int main() {
     // Menu principal com opções:
